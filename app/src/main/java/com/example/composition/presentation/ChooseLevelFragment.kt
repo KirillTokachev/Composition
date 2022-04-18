@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.composition.R
+import androidx.navigation.fragment.findNavController
 import com.example.composition.databinding.FragmentChooseLevelBinding
 import com.example.composition.domain.entity.Level
 
@@ -26,46 +26,23 @@ class ChooseLevelFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
             buttonLevelTest.setOnClickListener {
-                launchGameFragment(it)
+                launchGameFragment(Level.TEST)
             }
             buttonLevelEasy.setOnClickListener {
-                launchGameFragment(it)
+                launchGameFragment(Level.EASY)
             }
             buttonLevelNormal.setOnClickListener {
-                launchGameFragment(it)
+                launchGameFragment(Level.NORMAL)
             }
             buttonLevelHard.setOnClickListener {
-                launchGameFragment(it)
+                launchGameFragment(Level.HARD)
             }
         }
     }
 
-    private fun launchGameFragment(view: View) {
-        var level = when (view) {
-            binding.buttonLevelTest -> Level.TEST
-            binding.buttonLevelEasy -> Level.EASY
-            binding.buttonLevelNormal -> Level.NORMAL
-            binding.buttonLevelHard -> Level.HARD
-            else -> {
-                throw RuntimeException("No level")
-            }
-        }
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.main_container, GameFragment.newInstance(level))
-            .addToBackStack(GameFragment.NAME)
-            .commit()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
-
-    companion object {
-        const val NAME = "ChooseLevelFragment"
-
-        fun newInstance(): ChooseLevelFragment {
-            return ChooseLevelFragment()
-        }
+    private fun launchGameFragment(level: Level) {
+        findNavController().navigate(
+            ChooseLevelFragmentDirections.actionChooseLevelFragmentToGameFragment(level)
+        )
     }
 }
